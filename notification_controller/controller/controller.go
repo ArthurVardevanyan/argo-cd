@@ -6,9 +6,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/argoproj/argo-cd/v2/util/glob"
-
 	"github.com/argoproj/argo-cd/v2/util/notification/k8s"
+	"github.com/argoproj/argo-cd/v2/util/regex"
 
 	service "github.com/argoproj/argo-cd/v2/util/notification/argocd"
 
@@ -122,7 +121,7 @@ func NewController(
 
 // Check if app is not in the namespace where the controller is in, and also app is not in one of the applicationNamespaces
 func checkAppNotInAdditionalNamespaces(app *unstructured.Unstructured, namespace string, applicationNamespaces []string) bool {
-	return namespace != app.GetNamespace() && !glob.MatchStringInList(applicationNamespaces, app.GetNamespace(), false)
+	return namespace != app.GetNamespace() && !regex.MatchStringInList(applicationNamespaces, app.GetNamespace(), false)
 }
 
 func (c *notificationController) alterDestinations(obj v1.Object, destinations services.Destinations, cfg api.Config) services.Destinations {
@@ -151,7 +150,7 @@ func newInformer(resClient dynamic.ResourceInterface, controllerNamespace string
 				}
 				newItems := []unstructured.Unstructured{}
 				for _, res := range appList.Items {
-					if controllerNamespace == res.GetNamespace() || glob.MatchStringInList(applicationNamespaces, res.GetNamespace(), false) {
+					if controllerNamespace == res.GetNamespace() || regex.MatchStringInList(applicationNamespaces, res.GetNamespace(), false) {
 						newItems = append(newItems, res)
 					}
 				}

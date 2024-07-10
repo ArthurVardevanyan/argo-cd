@@ -49,6 +49,20 @@ func Test_IsNamespaceEnabled(t *testing.T) {
 			[]string{"allowed"},
 			false,
 		},
+		{
+			"all namespaces, but another servers namespace",
+			"my-other-namespace",
+			"argocd",
+			[]string{"^(?!(managed-namespace)$).*"},
+			true,
+		},
+		{
+			"namespace is not allowed to be another managed namespace",
+			"managed-namespace",
+			"argocd",
+			[]string{"^(?!(managed-namespace)$).*"},
+			false,
+		},
 	}
 
 	for _, tc := range testCases {

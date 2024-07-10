@@ -56,6 +56,7 @@ import (
 	argodiff "github.com/argoproj/argo-cd/v2/util/argo/diff"
 	"github.com/argoproj/argo-cd/v2/util/argo/normalizers"
 	"github.com/argoproj/argo-cd/v2/util/env"
+	"github.com/argoproj/argo-cd/v2/util/regex"
 	"github.com/argoproj/argo-cd/v2/util/stats"
 
 	kubeerrors "k8s.io/apimachinery/pkg/api/errors"
@@ -2087,7 +2088,7 @@ func (ctrl *ApplicationController) shouldSelfHeal(app *appv1.Application) (bool,
 // isAppNamespaceAllowed returns whether the application is allowed in the
 // namespace it's residing in.
 func (ctrl *ApplicationController) isAppNamespaceAllowed(app *appv1.Application) bool {
-	return app.Namespace == ctrl.namespace || glob.MatchStringInList(ctrl.applicationNamespaces, app.Namespace, false)
+	return app.Namespace == ctrl.namespace || regex.MatchStringInList(ctrl.applicationNamespaces, app.Namespace, false)
 }
 
 func (ctrl *ApplicationController) canProcessApp(obj interface{}) bool {
